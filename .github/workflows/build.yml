@@ -16,8 +16,5 @@ jobs:
       - name: Setup Go Environment
         uses: ./.github/actions/setup
 
-      - name: Build binaries
-        run: make build
-
       - name: Test binaries
         run: make test

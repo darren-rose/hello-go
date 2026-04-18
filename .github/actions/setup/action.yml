@@ -12,3 +12,6 @@ runs:
     - name: Download dependencies
       run: go mod download
       shell: bash
+
+    - name: Build binaries
+      run: make build

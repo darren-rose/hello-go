@@ -19,10 +19,6 @@ jobs:
       - name: Setup Go Environment
         uses: ./.github/actions/setup
 
-      - name: Build release binaries
-        run: |
-          make clean build
-
       - name: Create GitHub release
         id: create_release
         uses: softprops/action-gh-release@v1
