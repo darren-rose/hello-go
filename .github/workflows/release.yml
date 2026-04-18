@@ -1,0 +1,61 @@
+name: Release Go binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.26.2'
+
+      - name: Build release binaries
+        run: |
+          make clean build
+
+      - name: Create GitHub release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: |-
+            Release ${{ github.ref_name }} with prebuilt Go binaries for linux/amd64, windows/amd64, darwin/amd64, and darwin/arm64.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/app-linux-amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/app-windows-amd64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Darwin AMD64 binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/app-darwin-amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Darwin ARM64 binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/app-darwin-arm64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
