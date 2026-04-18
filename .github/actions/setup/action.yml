@@ -1,0 +1,17 @@
+name: Setup Go Environment
+description: Checkout repository, setup Go, and download dependencies
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.26.2'
+
+    - name: Download dependencies
+      run: go mod download
+      shell: bash
