@@ -6,7 +6,7 @@ MAIN_FILE=cmd/app/main.go
 .DEFAULT_GOAL := build
 
 # Build everything
-build: linux windows darwin-amd64 darwin-arm64
+build: linux windows darwin-amd64 darwin-arm64 raspberry-pi
 
 # Ensure bin directory exists
 init:
@@ -24,6 +24,9 @@ darwin-amd64: init
 darwin-arm64: init
 	@GOOS=darwin GOARCH=arm64 go build -o $(BIN_DIR)/$(APP_NAME)-darwin-arm64 $(MAIN_FILE)
 
+raspberry-pi: init
+	@GOOS=linux GOARCH=arm64 go build -o $(BIN_DIR)/$(APP_NAME)-raspberry-pi $(MAIN_FILE)
+
 # Clean build artifacts
 clean:
 	@rm -rf $(BIN_DIR)
@@ -35,13 +38,15 @@ test: build
 	@test -f $(BIN_DIR)/$(APP_NAME)-windows-amd64.exe || (echo "Windows binary missing"; exit 1)
 	@test -f $(BIN_DIR)/$(APP_NAME)-darwin-amd64 || (echo "Darwin AMD64 binary missing"; exit 1)
 	@test -f $(BIN_DIR)/$(APP_NAME)-darwin-arm64 || (echo "Darwin ARM64 binary missing"; exit 1)
+	@test -f $(BIN_DIR)/$(APP_NAME)-raspberry-pi || (echo "Raspberry Pi binary missing"; exit 1)
 	@echo "Verifying file types..."
 	@file $(BIN_DIR)/$(APP_NAME)-linux-amd64 | grep -q "ELF 64-bit LSB executable" || (echo "Linux binary type incorrect"; exit 1)
 	@file $(BIN_DIR)/$(APP_NAME)-windows-amd64.exe | grep -q "PE32+ executable" || (echo "Windows binary type incorrect"; exit 1)
-	@file $(BIN_DIR)/$(APP_NAME)-darwin-amd64 | grep -q "Mach-O 64-bit x86_64 executable" || (echo "Darwin AMD64 binary type incorrect"; exit 1)
-	@file $(BIN_DIR)/$(APP_NAME)-darwin-arm64 | grep -q "Mach-O 64-bit arm64 executable" || (echo "Darwin ARM64 binary type incorrect"; exit 1)
+	@file $(BIN_DIR)/$(APP_NAME)-darwin-amd64 | grep -q "Mach-O 64-bit executable x86_64" || (echo "Darwin AMD64 binary type incorrect"; exit 1)
+	@file $(BIN_DIR)/$(APP_NAME)-darwin-arm64 | grep -q "Mach-O 64-bit executable arm64" || (echo "Darwin ARM64 binary type incorrect"; exit 1)
+	@file $(BIN_DIR)/$(APP_NAME)-raspberry-pi | grep -q "ELF 64-bit LSB executable" || (echo "Raspberry Pi binary type incorrect"; exit 1)
 	@echo "Running Linux binary to verify functionality..."
-	@./$(BIN_DIR)/$(APP_NAME)-linux-amd64 | grep -q "Hello, World!" || (echo "Binary output incorrect"; exit 1)
+	@if [ "$$(uname)" = "Linux" ]; then ./$(BIN_DIR)/$(APP_NAME)-linux-amd64 | grep -q "Hello, World!" || (echo "Binary output incorrect"; exit 1); else echo "Skipping binary execution on non-Linux system"; fi
 	@echo "All tests passed!"
 
 # Run locally

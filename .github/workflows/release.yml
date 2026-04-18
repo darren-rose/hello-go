@@ -32,7 +32,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           body: |-
-            Release ${{ github.ref_name }} with prebuilt Go binaries for linux/amd64, windows/amd64, darwin/amd64, and darwin/arm64.
+            Release ${{ github.ref_name }} with prebuilt Go binaries for linux/amd64, windows/amd64, darwin/amd64, darwin/arm64, and linux/arm64 (Raspberry Pi).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -61,5 +61,12 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: bin/app-darwin-arm64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Raspberry Pi binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bin/app-raspberry-pi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
