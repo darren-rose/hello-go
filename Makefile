@@ -13,19 +13,19 @@ init:
 	@mkdir -p $(BIN_DIR)
 
 linux: init
-	@GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(APP_NAME)-linux-amd64 $(MAIN_FILE)
+	@GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(BIN_DIR)/$(APP_NAME)-linux-amd64 $(MAIN_FILE)
 
 windows: init
-	@GOOS=windows GOARCH=amd64 go build -o $(BIN_DIR)/$(APP_NAME)-windows-amd64.exe $(MAIN_FILE)
+	@GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o $(BIN_DIR)/$(APP_NAME)-windows-amd64.exe $(MAIN_FILE)
 
 darwin-amd64: init
-	@GOOS=darwin GOARCH=amd64 go build -o $(BIN_DIR)/$(APP_NAME)-darwin-amd64 $(MAIN_FILE)
+	@GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o $(BIN_DIR)/$(APP_NAME)-darwin-amd64 $(MAIN_FILE)
 
 darwin-arm64: init
-	@GOOS=darwin GOARCH=arm64 go build -o $(BIN_DIR)/$(APP_NAME)-darwin-arm64 $(MAIN_FILE)
+	@GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o $(BIN_DIR)/$(APP_NAME)-darwin-arm64 $(MAIN_FILE)
 
 raspberry-pi: init
-	@GOOS=linux GOARCH=arm64 go build -o $(BIN_DIR)/$(APP_NAME)-raspberry-pi $(MAIN_FILE)
+	@GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o $(BIN_DIR)/$(APP_NAME)-raspberry-pi $(MAIN_FILE)
 
 # Clean build artifacts
 clean:
